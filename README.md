@@ -1,4 +1,4 @@
-Based on https://github.com/vitalets/github-trending-repos/
+Based on https://github.com/vitalets/github-trending-repos/ and a suggestion by @nebgnahz.
 
 Read JUnit HTML output and add a comment to an open issue on GitHub.
 
@@ -20,9 +20,7 @@ See https://github.com/icyphy/ptII/issues/1 for sample output.
 
 3. Create an issue in your GitHub repo that will be the issue that gets updated with the test results.  See https://github.com/icyphy/ptII/issues/1
   1. Create a label for the issue that signifies that it will be updated, for example `junit-results`.
-  2. Add the URL of the JUnit summary results page created by running the ant junitresults target, for example https://icyphy.github.io/ptII/reports/junit/html/overview-summary.html.
-
-  This tool looks for issues with a specific label and searches for urls that matches a regular expression defined in scripts/config.js.  So the issues need to ahve the appropriate label and the appropriate URL.
+  2. Add the URL of the JUnit summary results page created by running the ant junitresults target, for example https://icyphy.github.io/ptII/reports/junit/html/overview-summary.html.  This tool looks for issues with a specific label and searches for urls that matches a regular expression defined in scripts/config.js.  So the issues need to ahve the appropriate label and the appropriate URL.
 
 4. In your environment, set the JUNIT_LABEL variable to the name of the label created above
 ```
