@@ -4,14 +4,23 @@ const ms = require('ms');
 
 const config = {};
 
+// The repo that has an issue with label that will be updated.
+// Typical: export GITHUB_ISSUE_JUNIT=https://api.github.com/repos/cxbrooks/travis-junit
+config.apiUrl = process.env.GITHUB_ISSUE_JUNIT
+
+// The label of an issue in the repo.
 // Typical: export JUNIT_LABEL=junit-results
 config.issuesLabel = process.env.JUNIT_LABEL;
 
-// Invoke "export JUNIT_RESULTS_NOT_DRY_RUN=true" to actually post/delete comments
+// To actually post or delete a comment: Invoke "export JUNIT_RESULTS_NOT_DRY_RUN=true" and then.
 config.dryRun = !process.env.JUNIT_RESULTS_NOT_DRY_RUN;
 
+// The GitHub personal access token should have public_repo access.
 config.githubToken = process.env.GITHUB_TOKEN
-config.apiUrl = 'https://api.github.com/repos/cxbrooks/travis-junit';
+
+// This is used to extract the URL of the JUnit Summary page from the issue.
+// This is probably excess generality, but we leave it for now.
+config.junit_url_reg = /https:\/\/.*\/reports\/junit\/html\/overview-summary.html/ig;
 
 config.jUnitResultsRetryOptions = {
   retries: 5,
