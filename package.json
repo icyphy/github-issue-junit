@@ -1,6 +1,6 @@
 {
     "name": "@icyphy/github-issue-junit",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "Read JUnit HTML output and add a comment to an open issue on GitHub.",
     "author": {
         "name": "Christopher Brooks",
