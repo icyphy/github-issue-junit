@@ -40,7 +40,6 @@ export GITHUB_ISSUE_JUNIT=https://api.github.com/repos/cxbrooks/travis-junit
   3. On [Travis-ci](https://travis-ci.org), on your project page, click on More options -> Settings, then add the token from the step above as `GITHUB_TOKEN`
   4. For testing purposes, set the GITHUB_TOKEN environment variable on your local machine
 
-
 7. If necessary, update the variables in `scripts/config.js`
 
 8. To test:
@@ -64,7 +63,7 @@ export JUNIT_LABEL=junit-results
 export JUNIT_RESULTS_NOT_DRY_RUN=false
 export GITHUB_ISSUE_JUNIT=https://api.github.com/repos/cxbrooks/travis-junit
 (cd node_modules/@icyphy/github-issue-junit/scripts; node junit-results.js)
-```    
+```
 
 # How to publish updates to this module
 
