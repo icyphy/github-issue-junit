@@ -88,9 +88,10 @@ module.exports = class JUnitUpdater {
            ].filter(Boolean).join('\n');
          });
 
+        var errorNumber = 1;
         const commentErrorItems = this._jUnitErrorResults.map(repo => {
            return [
-             `[${repo.name}](${repo.url})`,
+             `${errorNumber++}. [${repo.name}](${repo.url})`,
              repo.description,
              repo.starsAdded ? `***+${repo.starsAdded}** stars ${since}*` : '',
            ].filter(Boolean).join('\n');

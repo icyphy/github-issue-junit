@@ -12,7 +12,7 @@ config.apiUrl = process.env.GITHUB_ISSUE_JUNIT
 // Typical: export JUNIT_LABEL=junit-results
 config.issuesLabel = process.env.JUNIT_LABEL;
 
-// To actually post or delete a comment: Invoke "export JUNIT_RESULTS_NOT_DRY_RUN=true" and then.
+// To actually post or delete a comment: Invoke "export JUNIT_RESULTS_NOT_DRY_RUN=true" and then invoke.
 config.dryRun = !process.env.JUNIT_RESULTS_NOT_DRY_RUN;
 
 // The GitHub personal access token should have public_repo access.

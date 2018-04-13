@@ -109,7 +109,7 @@ module.exports = class JUnitErrorResults {
             if (errorTable[i].type === 'tag' && errorTable[i].name === 'tr') {
                 // console.log('errorTable ' + i);
                 var fullUrl = errorTable[i].children[2].children[1].attribs.href;
-                var url = fullUrl.substring(0, fullUrl.indexOf('#'));
+                var url = fullUrl.replace(/ /g, '%20');
                 var name = fullUrl.substring(fullUrl.indexOf(' ') + 1, fullUrl.length);
                 // console.log(`fullUrl: ${fullUrl}, url: ${url}, name: ${name}`);
 
@@ -121,16 +121,6 @@ module.exports = class JUnitErrorResults {
                 this._repos.push(info);
             }
         }
-
-
-        const info = {
-            name,
-            // FIXME: this is hardwired:
-            url: 'https://icyphy.github.io/ptII/reports/junit/html/index.html',
-            description: `tests: ${tests}`,
-        };
-        log(`junit-error-results.js: _extractRepoInfo(}: ${name})`);
-        this._repos.push(info);
     }
 
     _saveHtmlToArtifacts(html) {
