@@ -9,16 +9,16 @@ const config = require('../config');
 const {log} = require('./logger');
 const Issues = require('./issues');
 //const Trends = require('./trends');
-const JUnitHTMLResults = require('./junit-html-results');
+const JUnitErrorResults = require('./junit-error-results');
+const JUnitSummaryResults = require('./junit-summary-results');
 const Comments = require('./comments');
 
 module.exports = class JUnitUpdater {
     constructor(issue) {
         this._issue = issue;
         this._commentsHelper = new Comments(this._issue);
-        this._jUnitResultsRepos = [];
-        this._knownRepos = [];
-        // this._newRepos = [];
+        this._jUnitErrorResults = [];
+        this._jUnitSummaryResults = [];
         this._commentBody = '';
         this._updated = false;
     }
@@ -38,8 +38,12 @@ module.exports = class JUnitUpdater {
     }
 
     async _loadJUnitResults() {
-       const jUnitResultsUrl = Issues.extractJUnitResultsUrl(this._issue);
-       this._jUnitResultsRepos = await new JUnitHTMLResults(jUnitResultsUrl, config.jUnitResultsRetryOptions).getAll();
+        const jUnitSummaryResultsUrl = Issues.extractJUnitSummaryResultsUrl(this._issue);
+        this._jUnitSummaryResults = await new JUnitSummaryResults(jUnitSummaryResultsUrl,
+                                                                  config.jUnitResultsRetryOptions).getAll();
+        const jUnitErrorResultsUrl = Issues.extractJUnitErrorResultsUrl(this._issue);
+        this._jUnitErrorResults = await new JUnitErrorResults(jUnitErrorResultsUrl,
+                                                              config.jUnitResultsRetryOptions).getAll();
     }
 
     async _postComment() {
@@ -74,14 +78,26 @@ module.exports = class JUnitUpdater {
 
     _generateCommentBody() {
         const header = `**${this._issue.title}!**`;
-        const commentItems = this._jUnitResultsRepos.map(repo => {
+        // FIXME: we don't really have a notion of a repo any more and
+        // there should be at most one repo
+        const commentSummaryItems = this._jUnitSummaryResults.map(repo => {
            return [
              `[${repo.name.replace('/', ' / ')}](${repo.url})`,
              repo.description,
              repo.starsAdded ? `***+${repo.starsAdded}** stars ${since}*` : '',
            ].filter(Boolean).join('\n');
          });
-        log(`junit-updated.js: _generateCommentBody(): this._jUnitResultsRepos: ${this._jUnitResultsRepos}`);
-        this._commentBody = [header, ...commentItems].join('\n\n');
+
+        const commentErrorItems = this._jUnitErrorResults.map(repo => {
+           return [
+             `[${repo.name}](${repo.url})`,
+             repo.description,
+             repo.starsAdded ? `***+${repo.starsAdded}** stars ${since}*` : '',
+           ].filter(Boolean).join('\n');
+         });
+
+        // log(`junit-updated.js: _generateCommentBody(): this._jUnitSummaryResults: ${this._jUnitResults}`);
+
+        this._commentBody = [header, ...commentSummaryItems, ...commentErrorItems].join('\n\n');
     }
 };

@@ -9,7 +9,8 @@ const githubApi = require('./github-api');
 const PER_PAGE = 100;
 
 // FIXME: Get rid of the host
-const JUNIT_URL_REG = /https:\/\/icyphy.github.io\/ptII\/reports\/junit\/html\/overview-summary.html/ig;
+const JUNIT_URL_ERROR_REG = /https:\/\/icyphy.github.io\/ptII\/reports\/junit\/html\/alltests-errors.html/ig;
+const JUNIT_URL_SUMMARY_REG = /https:\/\/icyphy.github.io\/ptII\/reports\/junit\/html\/overview-summary.html/ig;
 
 module.exports = class Issues {
     constructor(label) {
@@ -17,9 +18,15 @@ module.exports = class Issues {
         this._issues = [];
     }
 
-    static extractJUnitResultsUrl(issue) {
-        const matches = issue.body.match(JUNIT_URL_REG);
-        assert(matches, `Can't find JUnit Results url ${JUNIT_URL_REG} in body of issue: ${issue.url}, body: ${issue.body}`);
+    static extractJUnitErrorResultsUrl(issue) {
+        const matches = issue.body.match(JUNIT_URL_ERROR_REG);
+        assert(matches, `Can't find JUnit Results url ${JUNIT_URL_ERROR_REG} in body of issue: ${issue.url}, body: ${issue.body}`);
+        return matches[0];
+    }
+
+    static extractJUnitSummaryResultsUrl(issue) {
+        const matches = issue.body.match(JUNIT_URL_SUMMARY_REG);
+        assert(matches, `Can't find JUnit Results url ${JUNIT_URL_SUMMARY_REG} in body of issue: ${issue.url}, body: ${issue.body}`);
         return matches[0];
     }
 

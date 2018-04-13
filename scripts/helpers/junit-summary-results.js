@@ -23,7 +23,7 @@ const request = axios.create({
     timeout: 30 * 1000,
 });
 
-module.exports = class JUnitHTMLResults {
+module.exports = class JUnitSummaryResults {
     constructor(url, retryOptions) {
         this._url = url;
         this._retryOptions = Object.assign({}, RETRY_DEFAULTS, retryOptions);
@@ -35,7 +35,7 @@ module.exports = class JUnitHTMLResults {
     }
 
     /**
-     * Loads JUnit HTML Results (3 retries).
+     * Loads JUnit Summary HTML Results (3 retries).
      *
      * @returns {Promise<Array>}
      */
@@ -43,7 +43,7 @@ module.exports = class JUnitHTMLResults {
         return promiseRetry((retry, attempt) => {
             const date = new Date();
             const time = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
-            log(`Fetching JUnitHtmlResults (attempt #${attempt}, ${time}): ${this._url}`);
+            log(`Fetching JUnitSummaryResults (attempt #${attempt}, ${time}): ${this._url}`);
             return this._loadRepos().catch(e => this._retry(e, retry));
         }, this._retryOptions);
     }
@@ -56,7 +56,7 @@ module.exports = class JUnitHTMLResults {
         // FIXME: just deal with the first item.
         this._extractRepoInfo(this._domRepos[0]);
         if (this._repos.length === 0) {
-            throw new Error(`Can't find JUnit HTML Results on page: ${this._url}`);
+            throw new Error(`Can't find JUnit Summary Results on page: ${this._url}`);
         }
         return this._repos;
     }
@@ -85,7 +85,7 @@ module.exports = class JUnitHTMLResults {
     _queryRepos() {
         //this._domRepos = this._$('li', 'ol.repo-list');
         this._domRepos = this._$('table');
-        log(`Found JUnit HTML page: ${this._domRepos.length}`);
+        log(`Found JUnit Summary HTML page: ${this._domRepos.length}`);
     }
 
     _extractRepoInfo(repo) {
@@ -105,7 +105,7 @@ module.exports = class JUnitHTMLResults {
         const time = summaryRow.children[6].children[0].data;
         // const summaryTable = util.inspect($repo[0].parent.children[3].children[1].children[0].children[2], {showHidden: true, depth: 2});
 
-        log(`junit-html-results.js: _extractRepoInfo(${repo}), name: ${repoName}, length: ${repoLength}, ${repoChildrenLength}, ${repoParentLength}: tests: ${tests}, failures: ${failures}, errors: ${errors}, skipped: ${skipped}, successRate: ${successRate}, time: ${time}`)
+        // log(`junit-summary-results.js: _extractRepoInfo(${repo}), name: ${repoName}, length: ${repoLength}, ${repoChildrenLength}, ${repoParentLength}: tests: ${tests}, failures: ${failures}, errors: ${errors}, skipped: ${skipped}, successRate: ${successRate}, time: ${time}`)
         // repo2: ${repo2}`);
         // const name = $repo.find('table').text().trim().replace(/ /g, '');
         const name = $repo[0].parent.children[1].children[0].data.replace(/ /g, '');
@@ -118,7 +118,7 @@ module.exports = class JUnitHTMLResults {
             url: 'https://icyphy.github.io/ptII/reports/junit/html/index.html',
             description: `tests: ${tests}, failures: ${failures}, errors: ${errors}, skipped: ${skipped}, successRate: ${successRate}, time: ${time}`,
         };
-        log(`junit-html-results.js: _extractRepoInfo(}: ${name})`);
+        // log(`junit-summary-results.js: _extractRepoInfo(}: ${name})`);
         this._repos.push(info);
     }
 
