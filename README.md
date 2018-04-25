@@ -70,7 +70,7 @@ export GITHUB_ISSUE_JUNIT=https://api.github.com/repos/cxbrooks/travis-junit
         npm login
 
         Username: icyphy-npm
-        Password: See https://wiki.eecs.berkeley.edu/ptolemy/Ptolemy/Accounts
+        Password: See https://wiki.eecs.berkeley.edu/ptolemy/Ptolemy/Accounts or passwords/icyphy-npm in the  https://repo.eecs.berkeley.edu/git/projects/ealprivi/ealprivi.git repo.
         Email: icyphy-npm@icyphy.org
 3.  Publish:
         npm publish --access public
