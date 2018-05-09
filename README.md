@@ -48,7 +48,7 @@ node ./scripts/junit-results.js
 9. To actually upload the results to an issue:
 ```
 export JUNIT_RESULTS_NOT_DRY_RUN=false
-node junit-results.js
+node ./scripts/junit-results.js
 ```
 
 10. To have Travis do the update, create a script:
@@ -62,6 +62,23 @@ export JUNIT_RESULTS_NOT_DRY_RUN=false
 export GITHUB_ISSUE_JUNIT=https://api.github.com/repos/cxbrooks/travis-junit
 (cd node_modules/@icyphy/github-issue-junit/scripts; node junit-results.js)
 ```
+
+
+# How to clean results that are older than 30 days
+
+1. Follow steps 1 - 7 above
+
+2. To test
+```
+node ./scripts/issue-cleaner.js
+```
+
+3. To actually upload the results to an issue:
+```
+export JUNIT_RESULTS_NOT_DRY_RUN=false
+node ./scripts/issue-cleaner.js
+```
+
 
 # How to publish updates to this module
 

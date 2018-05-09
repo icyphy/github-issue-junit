@@ -1,5 +1,7 @@
 /**
- * Updates single issue.
+ * Clean issues older than 30 days.
+ *
+ * See ../README.md   
  */
 
 const ms = require('ms');
