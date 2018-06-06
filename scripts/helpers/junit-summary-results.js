@@ -1,5 +1,5 @@
 /**
- * Grabs the summary line showing the number of JUnit tests from https://icyphy.github.io/ptII/reports/junit/html/overview-summary.html
+ * Grabs the summary line showing the number of JUnit tests from https://icyphy.github.io/ptII-test/reports/junit/html/overview-summary.html
  *
  * In case of error retries X times because server can response with different errors:
  * 1. "This page is taking way too long to load." - when page loads too long
@@ -8,6 +8,7 @@
 
 const axios = require('axios');
 const cheerio = require('cheerio');
+const config = require('../config');
 const promiseRetry = require('promise-retry');
 const {log, logError} = require('./logger');
 const artifacts = require('./artifacts');
@@ -114,8 +115,7 @@ module.exports = class JUnitSummaryResults {
         }
         const info = {
             name,
-            // FIXME: this is hardwired:
-            url: 'https://icyphy.github.io/ptII/reports/junit/html/index.html',
+            url: config.junit_url_index,
             description: `tests: ${tests}, failures: ${failures}, errors: ${errors}, skipped: ${skipped}, successRate: ${successRate}, time: ${time}`,
         };
         // log(`junit-summary-results.js: _extractRepoInfo(}: ${name})`);

@@ -18,6 +18,7 @@ module.exports = class JUnitUpdater {
         this._issue = issue;
         this._commentsHelper = new Comments(this._issue);
         this._jUnitErrorResults = [];
+        this._jUnitFailResults = [];
         this._jUnitSummaryResults = [];
         this._commentBody = '';
         this._updated = false;
@@ -41,9 +42,16 @@ module.exports = class JUnitUpdater {
         const jUnitSummaryResultsUrl = Issues.extractJUnitSummaryResultsUrl(this._issue);
         this._jUnitSummaryResults = await new JUnitSummaryResults(jUnitSummaryResultsUrl,
                                                                   config.jUnitResultsRetryOptions).getAll();
+
         const jUnitErrorResultsUrl = Issues.extractJUnitErrorResultsUrl(this._issue);
         this._jUnitErrorResults = await new JUnitErrorResults(jUnitErrorResultsUrl,
                                                               config.jUnitResultsRetryOptions).getAll();
+
+        const jUnitFailResultsUrl = Issues.extractJUnitFailResultsUrl(this._issue);
+        // Note that we use the JUnitErrorResults here to get the fail results
+        this._jUnitFailResults = await new JUnitErrorResults(jUnitFailResultsUrl,
+                                                              config.jUnitResultsRetryOptions).getAll();
+
     }
 
     async _postComment() {
@@ -88,6 +96,15 @@ module.exports = class JUnitUpdater {
            ].filter(Boolean).join('\n');
          });
 
+        var failNumber = 1;
+        const commentFailItems = this._jUnitFailResults.map(repo => {
+           return [
+             `${failNumber++}. [${repo.name}](${repo.url})`,
+             repo.description,
+             repo.starsAdded ? `***+${repo.starsAdded}** stars ${since}*` : '',
+           ].filter(Boolean).join('\n');
+         });
+
         var errorNumber = 1;
         const commentErrorItems = this._jUnitErrorResults.map(repo => {
            return [
@@ -99,6 +116,6 @@ module.exports = class JUnitUpdater {
 
         // log(`junit-updated.js: _generateCommentBody(): this._jUnitSummaryResults: ${this._jUnitResults}`);
 
-        this._commentBody = [header, ...commentSummaryItems, ...commentErrorItems].join('\n\n');
+        this._commentBody = [header, ...commentSummaryItems, '## Failures', ...commentFailItems, '## Errors', ...commentErrorItems].join('\n\n');
     }
 };

@@ -1,5 +1,5 @@
 /**
- * Grabs the errors lines showing the number of JUnit tests from https://icyphy.github.io/ptII/reports/junit/html/alltests-errors.html
+ * Grabs the error or failure lines showing the number of JUnit tests from https://icyphy.github.io/ptII-test/reports/junit/html/alltests-errors.html or alltests-fails.html
  *
  * In case of error retries X times because server can response with different errors:
  * 1. "This page is taking way too long to load." - when page loads too long
@@ -88,23 +88,41 @@ module.exports = class JUnitErrorResults {
         log(`Found JUnit Error HTML page: ${this._domRepos.length}`);
     }
 
+    // Note that this gets called for both errors and failures, which have the same format.
     _extractRepoInfo(repo) {
+        var baseUrl = this._url.substring(0, this._url.lastIndexOf('/') + 1);
         const $repo = this._$(repo);
         const repoLength = $repo.length
         const repoName = $repo[0].name
         const repoChildrenLength = $repo[0].children.length;;
         const repoParentLength = $repo[0].parent.children.length;
         const summaryRow = $repo[0].parent.children[9].children[1].children[2];
-        const summaryTable = util.inspect(summaryRow, {showHidden: true, depth: 3});
-        const tests = summaryRow.children[1].children[0].children[0].data;
+        if (summaryRow === undefined) {
+            const errorOrFail = this._url.substring(this._url.lastIndexOf('-') + 1, this._url.lastIndexOf('.'));
+            const info = {
+                name: 'Congratulations, no ' + errorOrFail,
+                url: baseUrl,
+                description: ''
+            };
+            console.log('junit-error-results.js: ' + info.name + ' ' + info.url);
+            this._repos.push(info);
+            return;
+        }
+
+        // const summaryTable = util.inspect(summaryRow, {showHidden: true, depth: 3});
         // const summaryTable = util.inspect($repo[0].parent.children[3].children[1].children[0].children[2], {showHidden: true, depth: 2});
+
+        const children1 = summaryRow.children[1];
+        const children2 = children1.children[0];
+        const children3 = children2.children[0];
+        const tests = children3.data;
 
         const errorTable = $repo[0].parent.children[9].children[1].children;
         log(`junit-error-results.js: _extractRepoInfo(${repo}), name: ${repoName}, length: ${repoLength}, ${repoChildrenLength}, ${repoParentLength}: tests: ${tests}`);
 
         // console.log(util.inspect(errorTable));
 
-        var baseUrl = this._url.substring(0, this._url.lastIndexOf('/') + 1);
+
         for (var i = 1; i < errorTable.length; i++) {
             if (errorTable[i].type === 'tag' && errorTable[i].name === 'tr') {
                 // console.log('errorTable ' + i);

@@ -18,10 +18,15 @@ config.dryRun = !process.env.JUNIT_RESULTS_NOT_DRY_RUN;
 // The GitHub personal access token should have public_repo access.
 config.githubToken = process.env.GITHUB_TOKEN
 
+// The URL of the JUnitindex.html file.
+// export JUNIT_URL_INDEX=https://icyphy.github.io/ptII-test/reports/junit/html/index.html
+config.junit_url_index = process.env.JUNIT_URL_INDEX;
+
 // This is used to extract the URL of the JUnit Summary page from the issue.
 // This is probably excess generality, but we leave it for now.
 config.junit_url_reg = /https:\/\/.*\/reports\/junit\/html\/overview-summary.html/ig;
 
+// Retry options
 config.jUnitResultsRetryOptions = {
   retries: 5,
   minTimeout: 5000,
